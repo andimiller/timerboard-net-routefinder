@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: timerboard-routes
+  namespace: default
+spec:
+  rules:
+  - host: routes.timerboard.net
+    http:
+      paths:
+      - backend:
+          service:
+            name: timerboard-routes
+            port:
+              number: 80
+        path: /
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - routes.timerboard.net
+    secretName: routes-timerboard-ssl
