@@ -27,7 +27,7 @@ lazy val root = (project in file("."))
       "http4s-server",
       "json-circe",
       "openapi-docs",
-      "swagger-ui",
+      "redoc",
       "prometheus-metrics",
       "opentelemetry-metrics"
     ).map { module =>

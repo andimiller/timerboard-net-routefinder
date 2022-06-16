@@ -3,14 +3,12 @@ package net.timerboard.routefinder
 import cats.data.Kleisli
 import cats.implicits._
 import cats.effect._
-import io.opentelemetry.api.OpenTelemetry
 import net.andimiller.hedgehogs.{Dijkstra, Graph}
 import org.http4s.{HttpRoutes, Request, Response}
 import scalacache.Cache
 import sttp.tapir.server.http4s.{Http4sServerInterpreter, Http4sServerOptions}
-import sttp.tapir.swagger.SwaggerUI
 import sttp.apispec.openapi.circe.yaml._
-import sttp.tapir.server.metrics.opentelemetry.OpenTelemetryMetrics
+import sttp.tapir.redoc.{Redoc, RedocUIOptions}
 import sttp.tapir.server.metrics.prometheus.PrometheusMetrics
 
 import scala.concurrent.duration.DurationInt
@@ -40,7 +38,11 @@ class Routes[F[_]: Async](
       .map(_.asRight)
   }
 
-  val docs = SwaggerUI[F](api.docs.toYaml)
+  val docs = Redoc[F](
+    "timerboard-net-routefinder",
+    api.docs.toYaml,
+    RedocUIOptions.default
+  )
 
   val prom = PrometheusMetrics.default[F]()
 

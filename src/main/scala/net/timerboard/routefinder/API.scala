@@ -1,5 +1,6 @@
 package net.timerboard.routefinder
 
+import cats.implicits.catsSyntaxOptionId
 import io.circe.{Codec => CCodec}
 import sttp.tapir._
 import sttp.tapir.docs.openapi.OpenAPIDocsInterpreter
@@ -14,7 +15,14 @@ object System                    {
 case class SystemId(value: Long)
 class API(systemIds: List[Long]) {
   implicit val system: Codec[String, SystemId, CodecFormat.TextPlain] =
-    Codec.long.validate(Validator.enumeration(systemIds)).map(SystemId)(_.value)
+    Codec.long
+      .validate(
+        Validator.custom(
+          id => ValidationResult.validWhen(systemIds.contains(id)),
+          "Id was not a valid Solar System ID".some
+        )
+      )
+      .map(SystemId)(_.value)
 
   val pathSystem =
     path[SystemId]("system_id").description("The id of a Solar System")
