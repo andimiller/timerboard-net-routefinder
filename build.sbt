@@ -8,7 +8,7 @@ lazy val root = (project in file("."))
   .enablePlugins(AshScriptPlugin)
   .settings(
     name := "timerboard-net-routefinder",
-    version := "0.1",
+    version := "0.2",
     dockerExposedPorts := Seq(8080),
     dockerRepository := Some("andimiller"),
     dockerExecCommand := Seq("podman"),
