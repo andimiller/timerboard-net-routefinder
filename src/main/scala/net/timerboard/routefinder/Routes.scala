@@ -9,6 +9,7 @@ import scalacache.Cache
 import sttp.tapir.server.http4s.{Http4sServerInterpreter, Http4sServerOptions}
 import sttp.apispec.openapi.circe.yaml._
 import sttp.tapir.redoc.{Redoc, RedocUIOptions}
+import sttp.tapir.server.interceptor.cors.CORSInterceptor
 import sttp.tapir.server.metrics.prometheus.PrometheusMetrics
 
 import scala.concurrent.duration.DurationInt
@@ -50,6 +51,7 @@ class Routes[F[_]: Async](
     Http4sServerInterpreter[F](
       Http4sServerOptions.customiseInterceptors
         .metricsInterceptor((prom.metricsInterceptor()))
+        .corsInterceptor(CORSInterceptor.default[F])
         .options
     ).toRoutes(
       List(listSystems, listRoutes, prom.metricsEndpoint) ++ docs
